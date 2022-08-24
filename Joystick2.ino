@@ -23,6 +23,9 @@
 
 const uint8_t pins[14] = {A0, A1, A2, A3, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
+int stickX = 0;
+int stickY = 0;
+
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_GAMEPAD,
                    10, 0,                 // Button Count, Hat Switch Count
                    true, true, false,     // X and Y, but no Z Axis
@@ -66,59 +69,59 @@ void loop()
     {
       int currentState = !digitalRead(pins[index]);
 
-      switch (index)
+      switch (index + 1)
       {
         // Analog / Stick pins
-        case 0:
-          if (currentState == 1)
-          {
-            Joystick.setYAxis(-1);
-            Serial.println("UP");
-          }
-          else
-          {
-            Joystick.setYAxis(0);
-          }
-          break;
-        
         case 1:
           if (currentState == 1)
           {
-            Joystick.setYAxis(1);
-            Serial.println("DOWN");
+            stickY -= 1;
+            Serial.println("UP");
           }
-          else
-          {
-            Joystick.setYAxis(0);
-          }
+          // else
+          // {
+          //   Joystick.setYAxis(0);
+          // }
           break;
-
+        
         case 2:
           if (currentState == 1)
           {
-            Joystick.setXAxis(-1);
-            Serial.println("LEFT");
+            stickY += 1;
+            Serial.println("DOWN");
           }
-          else
-          {
-            Joystick.setXAxis(0);
-          }
+          // else
+          // {
+          //   Joystick.setYAxis(0);
+          // }
           break;
-        
+
         case 3:
           if (currentState == 1)
           {
-            Joystick.setXAxis(1);
+            stickX -= 1;
+            Serial.println("LEFT");
+          }
+          // else
+          // {
+          //   Joystick.setXAxis(0);
+          // }
+          break;
+        
+        case 4:
+          if (currentState == 1)
+          {
+            stickX += 1;
             Serial.println("RIGHT");
           }
-          else
-          {
-            Joystick.setXAxis(0);
-          }
+          // else
+          // {
+          //   Joystick.setXAxis(0);
+          // }
           break;
 
         // Digital / Button pins
-        case 4:
+        case 5:
           if (currentState == 1)
           {
             Joystick.setButton(0, currentState);
@@ -130,7 +133,7 @@ void loop()
           }
           break;
 
-        case 5:
+        case 6:
           if (currentState == 1)
           {
             Joystick.setButton(1, currentState);
@@ -142,7 +145,7 @@ void loop()
           }
           break;
         
-        case 6:
+        case 7:
           if (currentState == 1)
           {
             Joystick.setButton(2, currentState);
@@ -154,7 +157,7 @@ void loop()
           }
           break;
 
-        case 7:
+        case 8:
           if (currentState == 1)
           {
             Joystick.setButton(3, currentState);
@@ -166,7 +169,7 @@ void loop()
           }
           break;
         
-        case 8:
+        case 9:
           if (currentState == 1)
           {
             Joystick.setButton(4, currentState);
@@ -178,7 +181,7 @@ void loop()
           }
           break;
 
-        case 9:
+        case 10:
         if (currentState == 1)
           {
             Joystick.setButton(5, currentState);
@@ -190,7 +193,7 @@ void loop()
           }
           break;
         
-        case 10:
+        case 11:
         if (currentState == 1)
           {
             Joystick.setButton(6, currentState);
@@ -202,7 +205,7 @@ void loop()
           }
           break;
 
-        case 11:
+        case 12:
           if (currentState == 1)
           {
             Joystick.setButton(7, currentState);
@@ -214,7 +217,7 @@ void loop()
           }
           break;
         
-        case 12:
+        case 13:
           if (currentState == 1)
           {
             Joystick.setButton(9, currentState);
@@ -226,7 +229,7 @@ void loop()
           }
           break;
         
-        case 13:
+        case 14:
           if (currentState == 1)
           {
             Joystick.setButton(10, currentState);
@@ -244,6 +247,30 @@ void loop()
       }
     }
 
-    delay(10);
+    if (stickX > 0)
+    {
+      stickX = min(stickX, 1);
+    }
+	  else if (stickX < 0)
+    {
+      stickX = max(stickX, -1);
+    }
+
+    if (stickY > 0)
+    {
+      stickY = min(stickY, 1);
+    }
+	  else if (stickX < 0)
+    {
+      stickY = max(stickY, -1);
+    }
+
+    Joystick.setXAxis(stickX);
+    Joystick.setYAxis(stickY);
+
+    stickX = 0;
+    stickY = 0;
+
+    //delay(10);
   }
 
